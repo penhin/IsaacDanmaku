@@ -38,12 +38,17 @@ function DevConsole.register(mod, renderer, settings, rules, context)
       return false
     end
     local variants = rule.variants[settings.persona] or rule.variants.strategist
-    renderer:push({
+    local message = {
       text = "[" .. scenarioId .. "] " .. variants[1],
       scenario_id = scenarioId,
       priority = rule.priority,
       critical = rule.priority >= 100,
-    })
+    }
+    if renderer.preview ~= nil then
+      renderer:preview(message)
+    else
+      renderer:push(message)
+    end
     output("queued scenario " .. scenarioId)
     return true
   end

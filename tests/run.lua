@@ -207,6 +207,7 @@ local previews = {}
 local previewRenderer = {
   active = {}, queue = {},
   push = function(_, message) table.insert(previews, message) end,
+  preview = function(_, message) previews = { message } end,
   clear = function() previews = {} end,
 }
 DevConsole.register(callbackMod, previewRenderer, Settings.sanitize(nil), Rules, callbackContext)
@@ -259,6 +260,11 @@ end
 check("critical message takes the released lane", foundCritical)
 renderer:clear()
 check("renderer clear", #renderer.queue == 0 and #renderer.active == 0)
+settings.enabled = false
+renderer:preview({ text = "forced preview", priority = 1, critical = false })
+check("renderer preview bypasses disabled setting and stale queue",
+  #renderer.queue == 1 and renderer.queue[1].text == "forced preview")
+settings.enabled = true
 
 local laneSettings = Settings.sanitize({ max_visible = 3 })
 local laneRenderer = Danmaku.new(laneSettings, platform)

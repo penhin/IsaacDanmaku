@@ -40,8 +40,8 @@ function Danmaku:clear()
   self.active = {}
 end
 
-function Danmaku:push(message)
-  if not self.settings.enabled then return end
+function Danmaku:push(message, force)
+  if not self.settings.enabled and not force then return end
   if message.critical and #self.active >= self.settings.max_visible then
     local lowestActive = 1
     for index = 2, #self.active do
@@ -66,6 +66,11 @@ function Danmaku:push(message)
     end
   end
   if not inserted then table.insert(self.queue, message) end
+end
+
+function Danmaku:preview(message)
+  self:clear()
+  self:push(message, true)
 end
 
 local function centerY(position, height, spacing)
