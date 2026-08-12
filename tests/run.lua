@@ -49,7 +49,8 @@ check("settings clamp lane count", defaults.max_visible == 4)
 check("settings reject enum", defaults.persona == "strategist")
 check("font scales stay compact and ordered", Constants.FONT_SCALE.small < Constants.FONT_SCALE.medium
   and Constants.FONT_SCALE.medium < Constants.FONT_SCALE.large
-  and Constants.FONT_SCALE.medium <= 0.6)
+  and Constants.FONT_SCALE.medium <= 0.35)
+check("normal danmaku remains readable", Constants.SPEED_FRAMES.normal >= 480)
 
 local saved = "old"
 local fakeMod = {
@@ -177,7 +178,9 @@ ModCallbacks = {
 }
 local callbackMod = {
   AddCallback = function(_, id, fn) registered[id] = fn end,
+  AddPriorityCallback = function(_, id, _, fn) registered[id] = fn end,
 }
+CallbackPriority = { EARLY = -100 }
 Callbacks.register(callbackMod, callbackContext,
   function(fact) table.insert(callbackFacts, fact); callbackContext:apply(fact) end,
   { clear = function() end, updateAndRender = function() end }, function() end)
@@ -211,6 +214,8 @@ registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "test A3")
 check("dev command previews one scene", #previews == 1 and previews[1].scenario_id == "A3")
 registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "clear")
 check("dev command clears previews", #previews == 0)
+IsaacDanmakuDev("test A3")
+check("built-in lua command fallback previews scene", #previews == 1 and previews[1].scenario_id == "A3")
 
 local settings = Settings.sanitize(nil)
 local engineA = CommentEngine.new(Rules)

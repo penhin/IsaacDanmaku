@@ -43,6 +43,15 @@ idm status
 idm clear
 ```
 
+如果当前 Mod 组合拦截了自定义命令，可使用游戏内置 `lua` 命令作为等价入口：
+
+```text
+lua IsaacDanmakuDev("test A3")
+lua IsaacDanmakuDev("test all")
+lua IsaacDanmakuDev("status")
+lua IsaacDanmakuDev("clear")
+```
+
 `idm test`只注入显示预览，不修改真实 RunContext、计数或规则冷却；真实事件链仍由自动化和实机流程验证。
 
 ## 文档

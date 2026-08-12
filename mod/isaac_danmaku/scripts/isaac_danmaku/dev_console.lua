@@ -57,7 +57,7 @@ function DevConsole.register(mod, renderer, settings, rules, context)
     output("  idm list             - list available scene IDs")
   end
 
-  mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, command, parameters)
+  local function execute(_, command, parameters)
     if not COMMANDS[string.lower(command or "")] then return end
     Isaac.DebugString("[IsaacDanmaku] console command: "
       .. tostring(command) .. " " .. tostring(parameters))
@@ -90,7 +90,22 @@ function DevConsole.register(mod, renderer, settings, rules, context)
     else
       showHelp()
     end
-  end)
+    return "[IsaacDanmaku] command accepted"
+  end
+
+  -- Run before ordinary callbacks from other mods. A malformed command
+  -- handler in another mod can otherwise swallow custom console commands.
+  if mod.AddPriorityCallback ~= nil and CallbackPriority ~= nil then
+    mod:AddPriorityCallback(ModCallbacks.MC_EXECUTE_CMD, CallbackPriority.EARLY, execute)
+  else
+    mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, execute)
+  end
+
+  -- Reliable fallback through the game's built-in `lua` command:
+  --   lua IsaacDanmakuDev("test A3")
+  _G.IsaacDanmakuDev = function(parameters)
+    return execute(nil, "idm", parameters or "help")
+  end
 
   mod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     if #pending == 0 then return end
