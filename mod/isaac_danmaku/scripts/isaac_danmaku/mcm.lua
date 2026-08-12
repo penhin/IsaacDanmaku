@@ -84,7 +84,7 @@ function Mcm.register(settings, save, renderer)
       settings.max_visible = value
       changed()
     end,
-    Info = { "同时显示 1 至 3 条弹幕，分别占用随机的上、中、下行。" },
+    Info = { "同时显示 1 至 3 条弹幕。" },
   })
   return true
 end
