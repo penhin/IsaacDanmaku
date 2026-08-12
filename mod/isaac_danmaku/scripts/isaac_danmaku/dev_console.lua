@@ -121,6 +121,8 @@ function DevConsole.register(mod, renderer, settings, rules, context)
   _G.IsaacDanmakuDev = function(parameters)
     return execute(nil, "idm", parameters or "help")
   end
+  _G.IDM = _G.IsaacDanmakuDev
+  _G.I = _G.IsaacDanmakuDev
 
   mod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     if #pending == 0 then return end

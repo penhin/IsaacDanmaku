@@ -45,6 +45,19 @@ idm clear
 
 常用预览也支持短写：`idm A3`、`idm all`。
 
+Repentance+ 1.9.7.17 J460 不会稳定地把未知短命令转发给 Mod。当前版本请使用
+游戏内置 `lua` 命令的短写 `l`，以及 IsaacDanmaku 的短入口 `I`：
+
+```text
+l I"A3"
+l I"all"
+l I"list"
+l I"status"
+l I"clear"
+```
+
+裸 `idm A3` 仅作为游戏未来修复后的兼容入口保留。
+
 如果当前 Mod 组合拦截了自定义命令，可使用游戏内置 `lua` 命令作为等价入口：
 
 ```text

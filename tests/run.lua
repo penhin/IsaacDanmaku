@@ -220,6 +220,9 @@ check("short dev command previews one scene", #previews == 1 and previews[1].sce
 registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "clear")
 IsaacDanmakuDev("test A3")
 check("built-in lua command fallback previews scene", #previews == 1 and previews[1].scenario_id == "A3")
+I("clear")
+I("A3")
+check("short built-in lua alias previews scene", #previews == 1 and previews[1].scenario_id == "A3")
 
 local settings = Settings.sanitize(nil)
 local engineA = CommentEngine.new(Rules)
