@@ -1,0 +1,8 @@
+<metadata>
+  <name>IsaacDanmaku</name>
+  <directory>isaac_danmaku</directory>
+  <id>isaac_danmaku</id>
+  <description>基于 Repentance+ 原生事件回调的中文局内陪伴弹幕。</description>
+  <version>0.1.0</version>
+  <visibility>Public</visibility>
+</metadata>

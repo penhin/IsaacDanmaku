@@ -1,0 +1,27 @@
+name: Package Workshop mod
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.3
+        run: sudo apt-get update && sudo apt-get install -y lua5.3
+      - name: Verify and package
+        run: |
+          lua5.3 tests/run.lua
+          version="${GITHUB_REF_NAME#v}"
+          grep -Fq "<version>${version}</version>" mod/isaac_danmaku/metadata.xml
+          cd mod
+          zip -r "../isaac-danmaku-${version}.zip" isaac_danmaku
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: isaac-danmaku-*.zip
+          generate_release_notes: true

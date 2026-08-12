@@ -1,0 +1,16 @@
+.env
+.venv/
+.pytest_cache/
+__pycache__/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
+.agents/
+skills-lock.json
+
+# Local Workshop staging and generated release archives
+workshop-staging/
+isaac-danmaku-*.zip
