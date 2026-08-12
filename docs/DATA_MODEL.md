@@ -50,4 +50,4 @@
 ## Settings
 
 设置 schema v1：`enabled`、`frequency`、`persona`、`spoiler_level`、`position`、`speed`、
-`font_size`、`opacity(0.5–1.0)`和`max_visible(1–4)`。未知字段忽略，非法值恢复对应默认值。
+`font_size`、`opacity(0.5–1.0)`和`max_visible(1–3)`。未知字段忽略，非法值恢复对应默认值。三条显示行以所选区域为中心，分别位于其上方、当前行和下方；新弹幕从空闲行中随机选择。

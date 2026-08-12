@@ -43,6 +43,8 @@ idm status
 idm clear
 ```
 
+常用预览也支持短写：`idm A3`、`idm all`。
+
 如果当前 Mod 组合拦截了自定义命令，可使用游戏内置 `lua` 命令作为等价入口：
 
 ```text

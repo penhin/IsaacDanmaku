@@ -45,7 +45,7 @@ local Constants = include("scripts.isaac_danmaku.constants")
 
 local defaults = Settings.sanitize({ opacity = 4, max_visible = 99, persona = "invalid" })
 check("settings clamp opacity", defaults.opacity == 1.0)
-check("settings clamp lane count", defaults.max_visible == 4)
+check("settings clamp lane count", defaults.max_visible == 3)
 check("settings reject enum", defaults.persona == "strategist")
 check("font scales stay compact and ordered", Constants.FONT_SCALE.small < Constants.FONT_SCALE.medium
   and Constants.FONT_SCALE.medium < Constants.FONT_SCALE.large
@@ -214,6 +214,9 @@ registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "test A3")
 check("dev command previews one scene", #previews == 1 and previews[1].scenario_id == "A3")
 registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "clear")
 check("dev command clears previews", #previews == 0)
+registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "A3")
+check("short dev command previews one scene", #previews == 1 and previews[1].scenario_id == "A3")
+registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "clear")
 IsaacDanmakuDev("test A3")
 check("built-in lua command fallback previews scene", #previews == 1 and previews[1].scenario_id == "A3")
 
@@ -238,6 +241,7 @@ local platform = {
   width = function() return 640 end,
   height = function() return 360 end,
   textWidth = function(text) return #text * 8 end,
+  random = function(maximum) return maximum end,
   draw = function() end,
 }
 local renderer = Danmaku.new(settings, platform)
@@ -255,6 +259,15 @@ end
 check("critical message takes the released lane", foundCritical)
 renderer:clear()
 check("renderer clear", #renderer.queue == 0 and #renderer.active == 0)
+
+local laneSettings = Settings.sanitize({ max_visible = 3 })
+local laneRenderer = Danmaku.new(laneSettings, platform)
+for index = 1, 3 do laneRenderer:push({ text = "lane" .. index, priority = 1, critical = false }) end
+laneRenderer:updateAndRender()
+local occupied = {}
+for _, message in ipairs(laneRenderer.active) do occupied[message.lane] = true end
+check("renderer randomly assigns three unique nearby rows",
+  occupied[1] and occupied[2] and occupied[3])
 
 local covered = {}
 for _, rule in ipairs(Rules) do covered[rule.scenario_id] = true end

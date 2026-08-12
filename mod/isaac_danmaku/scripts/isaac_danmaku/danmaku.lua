@@ -13,6 +13,7 @@ local function defaultPlatform(fontPath)
     width = function() return Isaac.GetScreenWidth() end,
     height = function() return Isaac.GetScreenHeight() end,
     textWidth = function(text) return font:GetStringWidthUTF8(text) end,
+    random = function(maximum) return math.random(maximum) end,
     draw = function(text, x, y, scale, opacity)
       font:DrawStringScaledUTF8(text, x + 1, y + 1, scale, scale, KColor(0, 0, 0, opacity * 0.75), 0, false)
       font:DrawStringScaledUTF8(text, x, y, scale, scale, KColor(1, 1, 1, opacity), 0, false)
@@ -67,10 +68,10 @@ function Danmaku:push(message)
   if not inserted then table.insert(self.queue, message) end
 end
 
-local function baseY(position, height, lanes, spacing)
-  if position == "middle" then return math.max(16, (height - lanes * spacing) / 2) end
-  if position == "bottom" then return math.max(16, height - lanes * spacing - 24) end
-  return 24
+local function centerY(position, height, spacing)
+  if position == "middle" then return height / 2 end
+  if position == "bottom" then return height - 24 - spacing end
+  return 24 + spacing
 end
 
 function Danmaku:updateAndRender()
@@ -83,13 +84,13 @@ function Danmaku:updateAndRender()
   while #self.active < maxVisible and #self.queue > 0 do
     local message = table.remove(self.queue, 1)
     message.started_frame = self.frame
-    for lane = 1, maxVisible do
-      if not usedLanes[lane] then
-        message.lane = lane
-        usedLanes[lane] = true
-        break
-      end
+    local available = {}
+    for lane = 1, 3 do
+      if not usedLanes[lane] then table.insert(available, lane) end
     end
+    local random = self.platform.random or math.random
+    message.lane = table.remove(available, random(#available))
+    usedLanes[message.lane] = true
     message.width = self.platform.textWidth(message.text) * Constants.FONT_SCALE[self.settings.font_size]
     table.insert(self.active, message)
   end
@@ -99,13 +100,13 @@ function Danmaku:updateAndRender()
   local scale = Constants.FONT_SCALE[self.settings.font_size]
   local duration = Constants.SPEED_FRAMES[self.settings.speed]
   local spacing = 34 * scale
-  local y0 = baseY(self.settings.position, screenHeight, maxVisible, spacing)
+  local y0 = centerY(self.settings.position, screenHeight, spacing)
   local survivors = {}
   for _, message in ipairs(self.active) do
     local progress = (self.frame - message.started_frame) / duration
     if progress <= 1 then
       local x = screenWidth - progress * (screenWidth + message.width + 16)
-      local y = y0 + (message.lane - 1) * spacing
+      local y = y0 + (message.lane - 2) * spacing
       self.platform.draw(message.text, x, y, scale, self.settings.opacity)
       table.insert(survivors, message)
     end

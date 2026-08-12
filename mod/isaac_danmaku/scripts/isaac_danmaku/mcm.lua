@@ -77,14 +77,14 @@ function Mcm.register(settings, save, renderer)
     Type = ModConfigMenu.OptionType.NUMBER,
     CurrentSetting = function() return settings.max_visible end,
     Minimum = 1,
-    Maximum = 4,
+    Maximum = 3,
     ModifyBy = 1,
     Display = function() return "同屏数量：" .. settings.max_visible end,
     OnChange = function(value)
       settings.max_visible = value
       changed()
     end,
-    Info = { "同时显示 1 至 4 条弹幕。" },
+    Info = { "同时显示 1 至 3 条弹幕，分别占用随机的上、中、下行。" },
   })
   return true
 end

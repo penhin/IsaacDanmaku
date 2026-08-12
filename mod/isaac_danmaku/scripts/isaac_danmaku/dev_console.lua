@@ -51,6 +51,7 @@ function DevConsole.register(mod, renderer, settings, rules, context)
   local function showHelp()
     output("commands:")
     output("  idm test <scene-id>  - preview one scene, e.g. idm test A3")
+    output("  idm <scene-id>       - short form, e.g. idm A3")
     output("  idm test all         - preview every M0 comment in order")
     output("  idm clear            - clear previews and danmaku")
     output("  idm status           - show context and renderer state")
@@ -63,6 +64,15 @@ function DevConsole.register(mod, renderer, settings, rules, context)
       .. tostring(command) .. " " .. tostring(parameters))
     local arguments = split(parameters)
     local action = string.lower(arguments[1] or "help")
+
+    -- Short forms for frequent preview work: `idm A3` and `idm all`.
+    if findRule(rules, string.upper(arguments[1] or "")) ~= nil then
+      arguments[2] = arguments[1]
+      action = "test"
+    elseif action == "all" then
+      arguments[2] = "all"
+      action = "test"
+    end
 
     if action == "test" then
       local requested = string.upper(arguments[2] or "")

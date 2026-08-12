@@ -38,7 +38,7 @@ function Settings.sanitize(candidate)
     result.opacity = math.max(0.5, math.min(1.0, candidate.opacity))
   end
   if type(candidate.max_visible) == "number" then
-    result.max_visible = math.max(1, math.min(4, math.floor(candidate.max_visible)))
+    result.max_visible = math.max(1, math.min(3, math.floor(candidate.max_visible)))
   end
   return result
 end

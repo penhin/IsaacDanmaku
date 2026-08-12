@@ -4,6 +4,8 @@
 
 ### Added
 
+- 弹幕改为在所选区域的上、中、下三行中随机出现，并支持 `idm A3`、`idm all` 测试短写。
+
 - 新增可直接发布到 Steam Workshop 的 Repentance+ Lua Mod。
 - 新增 M0 回调、RunContext、A1–I9场景映射和 schema v2 内置规则。
 - 新增三人格中文滚动弹幕、轨道调度和布局设置。
