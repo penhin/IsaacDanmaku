@@ -255,7 +255,7 @@ end
 
 if io.open ~= nil then
   local glyphs = {}
-  local fontFile = assert(io.open("mod/isaac_danmaku/resources/font/isaac_danmaku_zh.fnt", "r"))
+  local fontFile = assert(io.open("mod/isaac_danmaku/resources/font/isaac_danmaku_zh.fnt.txt", "r"))
   for line in fontFile:lines() do
     local id = string.match(line, "^char id=(%d+)")
     if id ~= nil then glyphs[tonumber(id)] = true end

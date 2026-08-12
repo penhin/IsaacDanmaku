@@ -59,6 +59,8 @@ function DevConsole.register(mod, renderer, settings, rules, context)
 
   mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, command, parameters)
     if not COMMANDS[string.lower(command or "")] then return end
+    Isaac.DebugString("[IsaacDanmaku] console command: "
+      .. tostring(command) .. " " .. tostring(parameters))
     local arguments = split(parameters)
     local action = string.lower(arguments[1] or "help")
 

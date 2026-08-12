@@ -16,6 +16,7 @@
 
 - 归一化换层时`MC_POST_NEW_ROOM`早于`MC_POST_NEW_LEVEL`的原生回调顺序，避免重复播报。
 - 配置菜单异常时保留核心 Mod，并让透明度滑杆完整覆盖 50%–100%。
+- 使用 Mod 绝对路径加载 BMFont Binary 字体，并显式加载游戏内 JSON 编解码器。
 
 ### Security
 

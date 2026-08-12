@@ -19,6 +19,7 @@ jobs:
           test -f mod/isaac_danmaku/main.lua
           test -f mod/isaac_danmaku/metadata.xml
           test -f mod/isaac_danmaku/resources/font/isaac_danmaku_zh.fnt
+          test "$(head -c 4 mod/isaac_danmaku/resources/font/isaac_danmaku_zh.fnt)" = "BMF$(printf '\003')"
           test -f mod/isaac_danmaku/resources/font/isaac_danmaku_zh_0.png
           test -f mod/isaac_danmaku/resources/font/OFL.txt
           ! grep -R -E "(socket|http|vision|capture|Sidecar)" mod/isaac_danmaku --include='*.lua'

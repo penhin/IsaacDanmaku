@@ -3,9 +3,9 @@ local Constants = include("scripts.isaac_danmaku.constants")
 local Danmaku = {}
 Danmaku.__index = Danmaku
 
-local function defaultPlatform()
+local function defaultPlatform(fontPath)
   local font = Font()
-  local loaded = font:Load("font/isaac_danmaku_zh.fnt")
+  local loaded = font:Load(fontPath)
   if not loaded then
     Isaac.DebugString("[IsaacDanmaku] failed to load bundled Chinese font")
   end
@@ -20,10 +20,10 @@ local function defaultPlatform()
   }
 end
 
-function Danmaku.new(settings, platform)
+function Danmaku.new(settings, platform, fontPath)
   local self = setmetatable({}, Danmaku)
   self.settings = settings
-  self.platform = platform or defaultPlatform()
+  self.platform = platform or defaultPlatform(fontPath)
   self.queue = {}
   self.active = {}
   self.frame = 0

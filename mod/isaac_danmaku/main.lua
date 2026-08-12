@@ -1,4 +1,29 @@
 local IsaacDanmaku = RegisterMod("IsaacDanmaku", 1)
+local json = require("json")
+
+local function currentModPath()
+  if debug ~= nil then
+    local source = string.sub(debug.getinfo(currentModPath).source, 2)
+    return string.gsub(source, "main.lua$", "")
+  end
+
+  -- Standard sandbox hides `debug`. A failed local require exposes the
+  -- current mod search path; this is the same fallback used by established
+  -- Repentance+ mods such as EID and Mod Config Menu.
+  local _, requireError = pcall(require, "")
+  local _, basePathStart = string.find(requireError, "no file '", 1, true)
+  if basePathStart ~= nil then
+    local _, modPathStart = string.find(requireError, "no file '", basePathStart + 1, true)
+    if modPathStart ~= nil then
+      local modPathEnd = string.find(requireError, ".lua'", modPathStart + 1, true)
+      if modPathEnd ~= nil then
+        local path = string.sub(requireError, modPathStart + 1, modPathEnd - 1)
+        return string.gsub(path, "\\", "/")
+      end
+    end
+  end
+  return "../mods/isaac_danmaku/"
+end
 
 local Settings = include("scripts.isaac_danmaku.settings")
 local RunContext = include("scripts.isaac_danmaku.run_context")
@@ -14,7 +39,8 @@ local settings = Settings.load(IsaacDanmaku, json)
 local context = RunContext.new()
 local detector = ScenarioDetector.new()
 local engine = CommentEngine.new(Rules)
-local renderer = Danmaku.new(settings)
+local renderer = Danmaku.new(settings, nil,
+  currentModPath() .. "resources/font/isaac_danmaku_zh.fnt")
 
 local function persistSettings()
   Settings.save(IsaacDanmaku, json, settings)
