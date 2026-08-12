@@ -123,6 +123,7 @@ function DevConsole.register(mod, renderer, settings, rules, context)
   end
   _G.IDM = _G.IsaacDanmakuDev
   _G.I = _G.IsaacDanmakuDev
+  Isaac.DebugString("[IsaacDanmaku] dev console ready: lua I(\"A3\")")
 
   mod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     if #pending == 0 then return end

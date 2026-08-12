@@ -69,4 +69,4 @@ end
 Callbacks.register(IsaacDanmaku, context, onFact, renderer, persistSettings)
 DevConsole.register(IsaacDanmaku, renderer, settings, Rules, context)
 
-Isaac.DebugString("[IsaacDanmaku] 0.1.0 loaded (Repentance+ single-player only)")
+Isaac.DebugString("[IsaacDanmaku] 0.1.1 loaded (Repentance+ single-player only)")
