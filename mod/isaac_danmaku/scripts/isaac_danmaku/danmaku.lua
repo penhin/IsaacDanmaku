@@ -98,7 +98,7 @@ function Danmaku:updateAndRender()
   local screenHeight = self.platform.height()
   local scale = Constants.FONT_SCALE[self.settings.font_size]
   local duration = Constants.SPEED_FRAMES[self.settings.speed]
-  local spacing = 22 * scale
+  local spacing = 34 * scale
   local y0 = baseY(self.settings.position, screenHeight, maxVisible, spacing)
   local survivors = {}
   for _, message in ipairs(self.active) do

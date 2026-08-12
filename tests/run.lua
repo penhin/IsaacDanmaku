@@ -41,11 +41,15 @@ local Danmaku = include("scripts.isaac_danmaku.danmaku")
 local Mcm = include("scripts.isaac_danmaku.mcm")
 local Callbacks = include("scripts.isaac_danmaku.callbacks")
 local DevConsole = include("scripts.isaac_danmaku.dev_console")
+local Constants = include("scripts.isaac_danmaku.constants")
 
 local defaults = Settings.sanitize({ opacity = 4, max_visible = 99, persona = "invalid" })
 check("settings clamp opacity", defaults.opacity == 1.0)
 check("settings clamp lane count", defaults.max_visible == 4)
 check("settings reject enum", defaults.persona == "strategist")
+check("font scales stay compact and ordered", Constants.FONT_SCALE.small < Constants.FONT_SCALE.medium
+  and Constants.FONT_SCALE.medium < Constants.FONT_SCALE.large
+  and Constants.FONT_SCALE.medium <= 0.6)
 
 local saved = "old"
 local fakeMod = {

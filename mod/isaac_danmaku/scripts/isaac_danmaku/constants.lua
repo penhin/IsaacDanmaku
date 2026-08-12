@@ -14,7 +14,7 @@ Constants.SPOILER_RANK = { none = 0, hint = 1, full = 2 }
 Constants.FREQUENCY_COOLDOWN = { off = math.huge, low = 2.0, normal = 1.0, high = 0.55 }
 Constants.GLOBAL_COOLDOWN_FRAMES = { off = math.huge, low = 9000, normal = 4500, high = 1800 }
 Constants.SPEED_FRAMES = { slow = 210, normal = 150, fast = 105 }
-Constants.FONT_SCALE = { small = 0.8, medium = 1.0, large = 1.2 }
+Constants.FONT_SCALE = { small = 0.45, medium = 0.55, large = 0.7 }
 
 Constants.SCENARIOS = {
   A1 = true, A3 = true, A9 = true,
