@@ -28,6 +28,23 @@ lua tests/run.lua
 
 CI 使用 Lua 5.3 执行测试。实机验收步骤见 [TEST_CASES.md](docs/TEST_CASES.md)。
 
+## 本地热重载
+
+开发时可把 `mod/isaac_danmaku` 目录联接到游戏的 `mods/isaac_danmaku`。修改 Lua 后，
+在游戏调试控制台执行 `luamod isaac_danmaku` 即可重新载入；局内重载会静默恢复当前楼层和房间上下文。
+
+重载后可使用开发命令快速预览弹幕：
+
+```text
+idm test A3
+idm test all
+idm list
+idm status
+idm clear
+```
+
+`idm test`只注入显示预览，不修改真实 RunContext、计数或规则冷却；真实事件链仍由自动化和实机流程验证。
+
 ## 文档
 
 - [架构](docs/ARCHITECTURE.md)

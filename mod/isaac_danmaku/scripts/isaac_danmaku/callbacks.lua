@@ -149,6 +149,24 @@ function Callbacks.register(mod, context, onFact, renderer, persistSettings)
   mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     renderer:updateAndRender()
   end)
+
+  -- `luamod isaac_danmaku` reloads files but does not replay the native
+  -- game-start callbacks. Rehydrate the domain state silently when reloading
+  -- during a run so subsequent room, damage, and floor facts remain usable.
+  if game:GetFrameCount() > 0 and not context.active then
+    onFact({
+      kind = "run_started",
+      frame = frame(),
+      silent = true,
+      data = {
+        is_continued = true,
+        run_seed = game:GetSeeds():GetStartSeed(),
+        hearts = primaryHealth(),
+      },
+    })
+    emitNewLevel(true)
+    emitRoomEntered(true)
+  end
 end
 
 return Callbacks

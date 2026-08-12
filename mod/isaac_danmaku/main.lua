@@ -8,6 +8,7 @@ local Rules = include("scripts.isaac_danmaku.rules")
 local Danmaku = include("scripts.isaac_danmaku.danmaku")
 local Mcm = include("scripts.isaac_danmaku.mcm")
 local Callbacks = include("scripts.isaac_danmaku.callbacks")
+local DevConsole = include("scripts.isaac_danmaku.dev_console")
 
 local settings = Settings.load(IsaacDanmaku, json)
 local context = RunContext.new()
@@ -40,5 +41,6 @@ if not mcmOk then
   Isaac.DebugString("[IsaacDanmaku] ModConfigMenu registration failed: " .. tostring(mcmError))
 end
 Callbacks.register(IsaacDanmaku, context, onFact, renderer, persistSettings)
+DevConsole.register(IsaacDanmaku, renderer, settings, Rules, context)
 
 Isaac.DebugString("[IsaacDanmaku] 0.1.0 loaded (Repentance+ single-player only)")

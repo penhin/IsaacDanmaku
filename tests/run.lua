@@ -12,6 +12,7 @@ local luaFiles = {
   "mod/isaac_danmaku/scripts/isaac_danmaku/comment_engine.lua",
   "mod/isaac_danmaku/scripts/isaac_danmaku/constants.lua",
   "mod/isaac_danmaku/scripts/isaac_danmaku/danmaku.lua",
+  "mod/isaac_danmaku/scripts/isaac_danmaku/dev_console.lua",
   "mod/isaac_danmaku/scripts/isaac_danmaku/mcm.lua",
   "mod/isaac_danmaku/scripts/isaac_danmaku/rules.lua",
   "mod/isaac_danmaku/scripts/isaac_danmaku/run_context.lua",
@@ -39,6 +40,7 @@ local Rules = include("scripts.isaac_danmaku.rules")
 local Danmaku = include("scripts.isaac_danmaku.danmaku")
 local Mcm = include("scripts.isaac_danmaku.mcm")
 local Callbacks = include("scripts.isaac_danmaku.callbacks")
+local DevConsole = include("scripts.isaac_danmaku.dev_console")
 
 local defaults = Settings.sanitize({ opacity = 4, max_visible = 99, persona = "invalid" })
 check("settings clamp opacity", defaults.opacity == 1.0)
@@ -56,7 +58,7 @@ local fakeCodec = {
     return { schema_version = 0, enabled = false }
   end,
 }
-Isaac = { DebugString = function() end }
+Isaac = { DebugString = function() end, ConsoleOutput = function() end }
 check("old settings schema restores defaults", Settings.load(fakeMod, fakeCodec).enabled == true)
 saved = "broken"
 check("corrupt settings restores defaults", Settings.load(fakeMod, fakeCodec).enabled == true)
@@ -135,6 +137,7 @@ callbackContext.stage = 1
 callbackContext.stage_type = 0
 local callbackGame = {
   GetFrameCount = function() return 100 end,
+  GetSeeds = function() return { GetStartSeed = function() return 789 end } end,
   GetLevel = function()
     return {
       GetStage = function() return 2 end,
@@ -151,6 +154,12 @@ local callbackGame = {
   end,
 }
 Game = function() return callbackGame end
+local callbackPlayer = {
+  GetHearts = function() return 4 end,
+  GetSoulHearts = function() return 2 end,
+  GetBoneHearts = function() return 0 end,
+}
+Isaac.GetPlayer = function() return callbackPlayer end
 RoomType = {
   ROOM_BOSS = 5, ROOM_TREASURE = 4, ROOM_SHOP = 2, ROOM_DEVIL = 14,
   ROOM_ANGEL = 15, ROOM_SACRIFICE = 13, ROOM_SECRET = 7, ROOM_SUPERSECRET = 8,
@@ -160,6 +169,7 @@ ModCallbacks = {
   MC_POST_GAME_STARTED = 1, MC_POST_NEW_LEVEL = 2, MC_POST_NEW_ROOM = 3,
   MC_ENTITY_TAKE_DMG = 4, MC_PRE_SPAWN_CLEAN_AWARD = 5, MC_POST_UPDATE = 6,
   MC_POST_GAME_END = 7, MC_PRE_GAME_EXIT = 8, MC_POST_RENDER = 9,
+  MC_EXECUTE_CMD = 10,
 }
 local callbackMod = {
   AddCallback = function(_, id, fn) registered[id] = fn end,
@@ -173,6 +183,30 @@ check("level callbacks normalize native reverse order", #callbackFacts == 2
   and callbackFacts[1].kind == "new_level"
   and callbackFacts[2].kind == "room_entered"
   and callbackFacts[2].silent == true)
+
+local reloadContext = RunContext.new()
+local reloadFacts = {}
+Callbacks.register(callbackMod, reloadContext,
+  function(fact) table.insert(reloadFacts, fact); reloadContext:apply(fact) end,
+  { clear = function() end, updateAndRender = function() end }, function() end)
+check("hot reload silently rehydrates active run", reloadContext.active
+  and reloadContext.run_seed == 789
+  and reloadContext.stage == 2
+  and reloadContext.room_index == 7
+  and #reloadFacts == 3
+  and reloadFacts[1].silent == true)
+
+local previews = {}
+local previewRenderer = {
+  active = {}, queue = {},
+  push = function(_, message) table.insert(previews, message) end,
+  clear = function() previews = {} end,
+}
+DevConsole.register(callbackMod, previewRenderer, Settings.sanitize(nil), Rules, callbackContext)
+registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "test A3")
+check("dev command previews one scene", #previews == 1 and previews[1].scenario_id == "A3")
+registered[ModCallbacks.MC_EXECUTE_CMD](nil, "idm", "clear")
+check("dev command clears previews", #previews == 0)
 
 local settings = Settings.sanitize(nil)
 local engineA = CommentEngine.new(Rules)
